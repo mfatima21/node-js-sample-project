@@ -10,10 +10,7 @@ app.use(bodyParser.json());
 const postsroute= require('./routes/posts');
 //middlewear
 app.use('/posts', postsroute)
-//ROUTES
-app.get('/', (req, res) => {
-    res.send('its working and we are on posts');
-});
+
 //connection to database
 mongoose.connect(process.env.DB_CONNECTION, 
     { useNewUrlParser: true }, () => 

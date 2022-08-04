@@ -3,14 +3,14 @@ const mongoose= require('mongoose');
 
 const movies = mongoose.Schema(
   {
-    titles: {
-      type: String
+    title: {
+      type: String ,
+      required:true
     },
     cast: {
-        type : [mongoose.Types.ObjectId],
-        ref: "cast",
-        required: true,
-        autopopulate: { maxDepth: 1 }      },
+        type : String ,
+      required: true 
+        },
     },
   {
     timestamps: {
@@ -21,4 +21,4 @@ const movies = mongoose.Schema(
 );
 
 const Movie = mongoose.model("Movie", movies);
-module.exports = mongoose.model("posts", movies);
+module.exports = mongoose.model("Posts", movies);

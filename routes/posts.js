@@ -5,11 +5,11 @@ router.get('/', (req, res) => {
     res.send('its working and we are on posts');
 });
 router.post('/',(req, res) =>{
-    const post = new Post({
+     const post = new movie({
         title: req.body.title,
         cast: req.body.cast,
         genre: req.body.genre
-    });
+     });
     post.save()
     .then(data => {
         res.json(data);

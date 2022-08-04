@@ -1,20 +1,37 @@
-import Movie from "../models/movie.model"
-import { Request, Response } from "express";
-import { successResponse, failureResponse } from "../helpers/responseMessage.helper"
+const Movie = require("../models/movie.model")
 
-
-const NOTFOUND = 0;
-const TIME_RANGES = ["daily", "weekly", "monthly", "custom"]
-
-class MovieController {
-  /**
-   * @function getAll
-   * @param req
-   * @param res
-   */
-   async post(req, res) {
-    const movieData = req.body;
+/**
+ * @function post
+ * @param req
+ * @param res
+ */
+const post = async (req, res) => {
+  const movieData = req.body;
+  try {
     const response = await Movie.create(movieData)
-    return res;
-   }
+    return res.json(response);
+  } catch (err) {
+    res.json({ message: err});
+  }
+  return res;
+}
+
+/**
+ * @function get
+ * @param req
+ * @param res
+ */
+ const get = async (req, res) => {
+  try {
+    const response = await Movie.find({});
+    return res.json(response);
+  } catch (err) {
+    res.json({ message: err});
+  }
+  return res;
+}
+
+module.exports = {
+  post,
+  get
 }

@@ -1,20 +1,30 @@
+const express = require("express");
+const app = express();
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
 
-const express= require('express');
-const app= express();
-const mongoose= require('mongoose');
-const bodyParser = require('body-parser');
-require('dotenv/config');
-//middleware i:e everytime when we hit request the body parser will run
-app.use(bodyParser.json());
-//importing Routes
-const postsroute= require('./routes/posts');
-//middlewear
-app.use('/posts', postsroute)
+const index= require('./routes/index.routes');
 
-//connection to database
-mongoose.connect(process.env.DB_CONNECTION, 
-    { useNewUrlParser: true }, () => 
-    console.log('Connection to the Datatbase is successful!')
-  );
+dotenv.config();
 
-  app.listen(3000); 
+mongoose.connect(
+  process.env.DB_CONNECTION,
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  },
+  (err) => {
+   if(err) console.log(err) 
+   else console.log("mongdb is connected");
+  }
+);
+
+// middleware
+app.use(express.json());
+
+//routes
+app.use('/posts', index)
+
+app.listen(3000, () => {
+  console.log("server is up and running");
+});

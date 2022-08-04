@@ -8,10 +8,10 @@ const movies = mongoose.Schema(
       required:true
     },
     cast: {
-        type : String ,
-      required: true 
-        },
+        type : [String] ,
+        required: true,
     },
+  },
   {
     timestamps: {
       createdAt: "created_at",
@@ -20,5 +20,4 @@ const movies = mongoose.Schema(
   }
 );
 
-const Movie = mongoose.model("Movie", movies);
-module.exports = mongoose.model("Posts", movies);
+module.exports = mongoose.model("Movie", movies);

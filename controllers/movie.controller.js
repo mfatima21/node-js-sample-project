@@ -22,13 +22,18 @@ const post = async (req, res) => {
  * @param res
  */
  const get = async (req, res) => {
+  let query_filter = [];
+  let query_params = req.query;
   try {
-    const response = await Movie.find({});
-    return res.json(response);
+    query_filter = query_params.title ? query_filter.concat({ title: { "$regex": req.query.title }}) : query_filter;
+    query_filter = query_params.cast ? query_filter.concat({ cast: { "$in": req.query.cast }}) : query_filter;
+    query_filter = query_params.genre ? query_filter.concat({ title: { $regex: req.query.genre }}) : query_filter;
+    const query  =  query_filter.length ? {"$or": query_filter} : {}
+    const data = await Movie.find(query);
+    res.send(data);
   } catch (err) {
     res.json({ message: err});
   }
-  return res;
 }
 
 module.exports = {

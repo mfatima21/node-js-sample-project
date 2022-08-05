@@ -1,3 +1,4 @@
+const Movie = require("./models/movie.model")
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
@@ -21,6 +22,21 @@ mongoose.connect(
 
 // middleware
 app.use(express.json());
+
+//Search
+app.get("/movies1", async (req,res)=>{
+  console.log(req.query);
+  //console.log(Movie);
+  const query = await Movie.find(
+    {
+      "$or":[
+        {title:{$regex:req.query.title}},
+        //{cast:{"$in":["req.query.cast"]}}
+      ]
+    }
+  );
+  res.send(query);
+})
 
 //routes
 app.use('/', index)

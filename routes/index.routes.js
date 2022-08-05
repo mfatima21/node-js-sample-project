@@ -1,5 +1,6 @@
 const express =  require("express");
-const MovieRoutes = require("./posts");
+const MovieRoutes = require("./posts.routes");
+const CastRoutes = require("./cast.routes");
 
 const router = express.Router();
 
@@ -12,6 +13,7 @@ router.get("/health-check", (req, res) => {
 });
 
 
-router.use("/", MovieRoutes);
+router.use("/movies", MovieRoutes);
+router.use("/cast", CastRoutes);
 
 module.exports = router;

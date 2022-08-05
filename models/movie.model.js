@@ -8,8 +8,10 @@ const movies = mongoose.Schema(
       required:true
     },
     cast: {
-        type : [String] ,
-        required: true,
+      type : [mongoose.Types.ObjectId] ,
+      required: true,
+      ref: "Cast",
+      autopopulate: { maxDepth: 2 }
     },
   },
   {

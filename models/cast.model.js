@@ -1,6 +1,6 @@
-import mongoose from 'mongoose'
+const mongoose= require('mongoose');
 
-const cast = new Schema({
+const cast =  mongoose.Schema({
     first_name: {
       type: String
     },
@@ -19,5 +19,4 @@ const cast = new Schema({
     }
 );
 
-const Cast = mongoose.model("Cast", cast);
-export default Cast;
+module.exports = mongoose.model("Cast", cast);

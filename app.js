@@ -23,7 +23,7 @@ mongoose.connect(
 app.use(express.json());
 
 //routes
-app.use('/posts', index)
+app.use('/', index)
 
 app.listen(3000, () => {
   console.log("server is up and running");

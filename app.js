@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 
 const index= require('./routes/index.routes');
+const { query } = require("express");
 
 dotenv.config();
 
@@ -25,13 +26,14 @@ app.use(express.json());
 
 //Search
 app.get("/movies1", async (req,res)=>{
-  console.log(req.query);
+  console.log(req.query.cast);
   //console.log(Movie);
+ 
   const query = await Movie.find(
     {
       "$or":[
         {title:{$regex:req.query.title}},
-        //{cast:{"$in":["req.query.cast"]}}
+        {cast:{"$in":req.query.cast}}
       ]
     }
   );

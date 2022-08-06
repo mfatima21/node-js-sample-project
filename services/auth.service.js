@@ -1,8 +1,11 @@
 const User = require("../models/user.model")
 const jwt = require('jsonwebtoken');
 const dotenv = require("dotenv");
+const express = require("express");
+const permissions = require("../permissions.json");
+router = express.Router();
 dotenv.config();
-
+console.log(permissions)
 /**
  * @function post
  * @param req
@@ -16,9 +19,12 @@ const login = async (req, res) => {
       let jwtSecretKey = process.env.JWT_SECRET_KEY;
       let data = {
         time: Date(),
-        userId: user._id,
-        role: user.role
+        userId: user[0]["_id"],
+        role: user[0]["role"]
       }
+      console.log(data);
+      console.log(user[0]["_id"]);
+      console.log(user[0]["role"]);
       //res.send("Logged in!");
       const token = jwt.sign(data, jwtSecretKey);
       return res.json({message: "Logged in", accessToken: token});
@@ -31,8 +37,8 @@ const login = async (req, res) => {
     res.json({ message: err});
   }
 }
-//Validate Token
-const validateToken =  (req, res)=> {
+//Verify Token                              middleware
+const validateToken =  (req, res, next)=> {
   console.log(req.headers);
   //let tokenHeaderKey = process.env.TOKEN_HEADER_KEY;
   let jwtSecretKey = process.env.JWT_SECRET_KEY;
@@ -43,8 +49,10 @@ const validateToken =  (req, res)=> {
     token = token.split(" ");
     console.log(token[1]);
     const verified = jwt.verify(token[1], jwtSecretKey);
+    console.log("verified", verified);
     if(verified){
-      return res.send("Successfully Verified");
+      req["user"]=verified;
+      next();
     }else{
       return res.status(401).send(error);
     }
@@ -53,7 +61,25 @@ const validateToken =  (req, res)=> {
   }
 }
 
+//authorization
+const authorization = (req, res, next)=> {
+ req.user.JWT_SECRET_KEYrole = "user"
+  if (req.user.role == "admin") {
+    res.status(200)
+      .send({
+        message: "Congratulations! but there is no hidden content"
+      });
+  } else {
+    res.status(403)
+      .send({
+        message: "Unauthorised access"
+      });
+  }
+};
+
+
 module.exports = {
   login,
-  validateToken
+  validateToken,
+  authorization
 }

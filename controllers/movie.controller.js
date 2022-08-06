@@ -1,3 +1,4 @@
+const  {logger} = require("../config/logger.config");
 const Movie = require("../models/movie.model")
 
 /**
@@ -9,6 +10,7 @@ const post = async (req, res) => {
   const movieData = req.body;
   try {
     const response = await Movie.create(movieData)
+    logger.info(response);
     return res.json(response);
   } catch (err) {
     res.json({ message: err});

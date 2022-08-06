@@ -14,9 +14,9 @@ router.get("/health-check", (req, res) => {
     return res.send("OK");
 });
 
-router.use("/movies",validateToken, MovieRoutes);
+
+router.use("/movies", MovieRoutes);
 router.use("/cast", validateToken, CastRoutes);
 router.use("/user", validateToken,authorization, UserRoutes);
 router.use("/login", authRoutes);
-
 module.exports = router;

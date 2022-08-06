@@ -2,6 +2,8 @@ const User = require("../models/user.model")
 const jwt = require('jsonwebtoken');
 const dotenv = require("dotenv");
 const express = require("express");
+
+//import permissions from './JSON/permissions.json' assert(type: 'json');
 const permissions = require("../permissions.json");
 router = express.Router();
 dotenv.config();
@@ -63,19 +65,24 @@ const validateToken =  (req, res, next)=> {
 
 //authorization
 const authorization = (req, res, next)=> {
- req.user.JWT_SECRET_KEYrole = "user"
-  if (req.user.role == "admin") {
-    res.status(200)
-      .send({
-        message: "Congratulations! but there is no hidden content"
-      });
+  console.log(req.method);
+  const method=req.method;
+  const role=req.user.role;
+  console.log(permissions[role]);
+  const allowed=permissions[role].includes(method)
+   
+  if (allowed) {
+    next()
   } else {
     res.status(403)
       .send({
         message: "Unauthorised access"
       });
   }
+
 };
+
+
 
 
 module.exports = {

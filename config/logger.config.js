@@ -3,8 +3,8 @@ var os = require("os");
 const dotenv = require("dotenv");
 dotenv.config();
 const httpTransportOptions = {
-  host: 'https://app.datadoghq.eu/',
-  path: `/api/v2/logs?dd-api-key=${process.env.DATADOG_API_KEY}&ddsource=nodejs&service=revation_dev&hostname=${os.hostname}`,
+  host: 'http-intake.logs.datadoghq.com',
+  path: `/api/v2/logs?dd-api-key=${process.env.DATADOG_API_KEY}&ddsource=nodejs&service=node-js-sample-project&hostname=${os.hostname}`,
   ssl: true,
 };
 

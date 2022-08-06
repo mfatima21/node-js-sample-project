@@ -2,17 +2,11 @@ const User = require("../models/user.model")
 const jwt = require('jsonwebtoken');
 const dotenv = require("dotenv");
 const express = require("express");
-
-//import permissions from './JSON/permissions.json' assert(type: 'json');
-const permissions = require("../permissions.json");
+const { successResponse, failureResponse } = require("./response.service");
 router = express.Router();
 dotenv.config();
-console.log(permissions)
-/**
- * @function post
- * @param req
- * @param res
- */
+const permissions = require("../permissions.json");
+
 const login = async (req, res) => {
   const userData = req.body;
   try {
@@ -24,66 +18,46 @@ const login = async (req, res) => {
         userId: user[0]["_id"],
         role: user[0]["role"]
       }
-      console.log(data);
-      console.log(user[0]["_id"]);
-      console.log(user[0]["role"]);
-      //res.send("Logged in!");
       const token = jwt.sign(data, jwtSecretKey);
-      return res.json({message: "Logged in", accessToken: token});
+      return successResponse(req, res, {message: "Logged in", accessToken: token}, 200);
     }
     else {
-      return res.json({message: "Your Email Or Password is incorrect"});
+      return failureResponse(req, res, {message: "Invalid username or password", error: true}, 401) 
     }
-    
   } catch (err) {
     res.json({ message: err});
   }
 }
-//Verify Token                              middleware
-const validateToken =  (req, res, next)=> {
-  console.log(req.headers);
-  //let tokenHeaderKey = process.env.TOKEN_HEADER_KEY;
-  let jwtSecretKey = process.env.JWT_SECRET_KEY;
- // console.log(tokenHeaderKey);
-  console.log(jwtSecretKey);
+
+const validateToken = (req, res, next) => {
+  if (!req.headers.authorization) {
+    return failureResponse(req, res, {message: "Please provide jwt token", error: true}, 401) 
+  }
   try {
     let token = req.headers.authorization;
     token = token.split(" ");
-    console.log(token[1]);
-    const verified = jwt.verify(token[1], jwtSecretKey);
-    console.log("verified", verified);
+    const verified = jwt.verify(token[1], process.env.JWT_SECRET_KEY);
     if(verified){
-      req["user"]=verified;
+      req["user"] = verified;
       next();
     }else{
-      return res.status(401).send(error);
+      return successResponse(req, res, {message: "invalid jwt token", accessToken: token}, 401);
     }
   } catch (error) {
-    return res.status(401).send(error);
+    return failureResponse(req, res, {message: error.message, error: true}, 500) 
   }
 }
 
-//authorization
-const authorization = (req, res, next)=> {
-  console.log(req.method);
-  const method=req.method;
-  const role=req.user.role;
-  console.log(permissions[role]);
-  const allowed=permissions[role].includes(method)
-   
+const authorization = (req, res, next) => {
+  const method  = req.method;
+  const role    = req.user.role;
+  const allowed = permissions[role].includes(method)
   if (allowed) {
     next()
   } else {
-    res.status(403)
-      .send({
-        message: "Unauthorised access"
-      });
+    return failureResponse(req, res, {message: "Your role doesnt have the specified permissions", error: true}, 500) 
   }
-
 };
-
-
-
 
 module.exports = {
   login,

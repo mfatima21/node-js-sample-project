@@ -1,4 +1,5 @@
-const Cast = require("../models/cast.model")
+const Cast = require("../models/cast.model");
+const { successResponse, failureResponse } = require("../services/response.service");
 
 /**
  * @function post
@@ -9,9 +10,9 @@ const post = async (req, res) => {
   const castData = req.body;
   try {
     const response = await Cast.create(castData)
-    return res.json(response);
+    return successResponse(req, res, response, 201);
   } catch (err) {
-    res.json({ message: err});
+    failureResponse(req, res, err.message, 500)
   }
   return res;
 }
@@ -24,9 +25,9 @@ const post = async (req, res) => {
  const get = async (req, res) => {
   try {
     const response = await Cast.find({});
-    return res.json(response);
+    return successResponse(req, res, response, 201);
   } catch (err) {
-    res.json({ message: err});
+    failureResponse(req, res, err.message, 500)
   }
   return res;
 }

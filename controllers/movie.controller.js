@@ -1,5 +1,5 @@
-const  {logger} = require("../config/logger.config");
 const Movie = require("../models/movie.model")
+const { successResponse, failureResponse } = require("../services/response.service");
 
 /**
  * @function post
@@ -9,11 +9,10 @@ const Movie = require("../models/movie.model")
 const post = async (req, res) => {
   const movieData = req.body;
   try {
-    const response = await Movie.create(movieData)
-    logger.info(response);
-    return res.json(response);
+    const data = await Movie.create(movieData)
+    return successResponse(req, res, data, 201);
   } catch (err) {
-    res.json({ message: err});
+    failureResponse(req, res, err.message, 500)
   }
   return res;
 }
@@ -27,14 +26,17 @@ const post = async (req, res) => {
   let query_filter = [];
   let query_params = req.query;
   try {
+    const p      = query_params.p ? parseInt(query_params.p.toString(), 10) : 1;
+    const limit  = query_params.limit ? parseInt(query_params.limit.toString(), 10) : 10;
+    const offset = limit * (p - 1);
     query_filter = query_params.title ? query_filter.concat({ title: { "$regex": req.query.title }}) : query_filter;
     query_filter = query_params.cast ? query_filter.concat({ cast: { "$in": req.query.cast }}) : query_filter;
     query_filter = query_params.genre ? query_filter.concat({ title: { $regex: req.query.genre }}) : query_filter;
     const query  =  query_filter.length ? {"$or": query_filter} : {}
-    const data = await Movie.find(query);
-    res.send(data);
+    let data     = await Movie.find(query).limit(+limit).skip(+offset);
+    return successResponse(req, res, data, 201);
   } catch (err) {
-    res.json({ message: err});
+    failureResponse(req, res, err.message, 500)
   }
 }
 

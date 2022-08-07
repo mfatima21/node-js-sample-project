@@ -28,7 +28,7 @@ chai.use(chaiHttp);
   describe('/GET ', () => {
       it('it should GET all the books', (done) => {
         chai.request(server)
-            .get('/movies')
+            .get('/cast')
             .set('authorization','Bearer ' + token)
             .end((err, res) => {
                 console.log(res)
@@ -41,44 +41,20 @@ chai.use(chaiHttp);
       });
   });
   //test for posts
-  describe('/Post ', () => {
-    it('it should post all the books', (done) => {
-      chai.request(server)
-          .post('/movies')
-          .set('authorization','Bearer ' + token)
-          .end((err, res) => {
-              console.log(res)
-                res.should.have.status(200);
-              
-              //   res.body.should.be.a('array');
-              //   res.body.length.should.be.eql(0);
-            done();
-          });
-    });
-});
-
-// const assert = require('assert'); 
-// var expect  = require('chai').expect;
-// var request = require('request');
-// const movieModel = require('../models/movie.model');
 
 
-// it('Movies.model Test', function(done) {
-//     request('http://localhost:3000/movies' , async function(error, response, body) {
-//         console.log("coming here")
-//         const facility = {
-//             title: "facilityId",
-//             cast: "test",
-//         };
-//         expect(body).to.equal('title,cast');
-//         console.log(movieModel.route)
-//         const test = await request(movieModel)
-//             .post("/movies")
-//             .send(facility)
-//             console.log(test)
-//         expect(response.status).toEqual(400);
-//         done();
-
-//     });
-// });
-
+  describe('/post ', () => {
+      it('it should GET all the books', (done) => {
+        chai.request(server)
+            .post('/cast')
+            .set('authorization','Bearer ' + token)
+            .end((err, res) => {
+                console.log(res)
+                  res.should.have.status(200);
+                
+                //   res.body.should.be.a('array');
+                //   res.body.length.should.be.eql(0);
+              done();
+            });
+      });
+  });

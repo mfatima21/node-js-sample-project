@@ -34,7 +34,7 @@ const post = async (req, res) => {
     query_filter = query_params.genre ? query_filter.concat({ title: { $regex: req.query.genre }}) : query_filter;
     const query  =  query_filter.length ? {"$or": query_filter} : {}
     let data     = await Movie.find(query).limit(+limit).skip(+offset);
-    return successResponse(req, res, data, 201);
+    return successResponse(req, res, data, 200);
   } catch (err) {
     failureResponse(req, res, err.message, 500)
   }

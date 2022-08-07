@@ -7,81 +7,37 @@ const dotenv = require("dotenv");
 const index= require('./routes/index.routes');
 const { query } = require("express");
 const jwt = require('jsonwebtoken');
+const { failureResponse } = require("./services/response.service");
 
 dotenv.config();
 
-mongoose.connect(
-  process.env.DB_CONNECTION,
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+mongoose.connect(process.env.DB_CONNECTION).then(
+  async () => {
+    console.log("connected to database" + process.env.DB_CONNECTION );
   },
-  (err) => {
-   if(err) console.log(err) 
-   else console.log("mongdb is connected");
-  }
-);
+).catch(err => {
+  console.log("MongoDB connection error. Please make sure MongoDB is running. " + err);
+});
 
-// middleware
 app.use(express.json());
-
-//Search
-app.get("/movies1", async (req,res)=>{
-  console.log(req.query.cast);
-  //console.log(Movie);
- 
-  const query = await Movie.find(
-    {
-      "$or":[
-        {title:{$regex:req.query.title}},
-        {cast:{"$in":req.query.cast}}
-      ]
-    }
-  );
-  res.send(query);
-})
-
-//routes
 app.use('/', index)
 
-app.listen(3000, () => {
-  console.log("server is up and running");
-});
-//Jwt authentication
-app.post("/user/generateToken", (req, res) => {
-  // Validate User Here
-  // Then generate JWT Token
-
-  let jwtSecretKey = process.env.JWT_SECRET_KEY;
-  let data = {
-      time: Date(),
-      userId: 12,
-  }
-
-  const token = jwt.sign(data, jwtSecretKey);
-
-  res.send(token);
-});
-
-// Verification through JWT
-app.get("/user/validateToken", (req, res) => {
-
-
-  let tokenHeaderKey = process.env.TOKEN_HEADER_KEY;
-  let jwtSecretKey = process.env.JWT_SECRET_KEY;
-
-  try {
-      const token = req.header(tokenHeaderKey);
-
-      const verified = jwt.verify(token, jwtSecretKey);
-      if(verified){
-          return res.send("Successfully Verified");
-      }else{
-         
-          return res.status(401).send(error);
-      }
-  } catch (error) {
-   
-      return res.status(401).send(error);
+app.use(function (err, req, res, next) {
+  const errorArray = [];
+  const length = err.details ? err.details.body.length : 0;
+  if (length > 0) {
+    for (let i = 0; i < err.details.body.length; i++) {
+      errorArray[i] = err.details.body[i].message;
+    }
+    failureResponse(req, res, {error: errorArray}, 400)
+  } else {
+    failureResponse(req, res, {error: err}, 400)
   }
 });
+
+app.listen(process.env.PORT, () => {
+  console.log("App is running at http://localhost:%d", process.env.PORT);
+  console.log("  Press CTRL-C to stop\n");
+});
+
+module.exports = app;

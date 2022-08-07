@@ -1,5 +1,8 @@
+const bcrypt = require('bcrypt');
 const User = require("../models/user.model")
 const { successResponse, failureResponse } = require("../services/response.service");
+
+const saltRounds = 10;
 
 /**
  * @function post
@@ -7,9 +10,11 @@ const { successResponse, failureResponse } = require("../services/response.servi
  * @param res
  */
 const post = async (req, res) => {
-  const userData = req.body;
+    const userData = req.body;
   try {
-    const response = await User.create(userData)
+    userData.password = await bcrypt.hash(userData.password, saltRounds)
+    let response = await User.create(userData);
+    delete response.password;
     return successResponse(req, res, response, 201);
   } catch (err) {
     failureResponse(req, res, err.message, 500)

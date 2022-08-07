@@ -1,14 +1,17 @@
 const mongoose= require('mongoose');
 
-const cast =  mongoose.Schema({
+const cast =  new mongoose.Schema({
     first_name: {
-      type: String
+      type: String,
+      required: true
     },
     last_name: {
-        type: String
+        type: String,
+        required: true
     },
     user_name: {
-        type: String
+        type: String,
+        required: true
     },
     },
     {

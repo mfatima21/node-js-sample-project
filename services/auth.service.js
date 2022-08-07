@@ -2,15 +2,21 @@ const User = require("../models/user.model")
 const jwt = require('jsonwebtoken');
 const dotenv = require("dotenv");
 const express = require("express");
+const bcrypt = require('bcrypt');
 const { successResponse, failureResponse } = require("./response.service");
+const permissions = require("../permissions.json");
 router = express.Router();
 dotenv.config();
-const permissions = require("../permissions.json");
 
 const login = async (req, res) => {
   const userData = req.body;
   try {
-    const user = await User.find({ email: userData.email, password: userData.password });
+    const user            = await User.find({ email: userData.email });
+    const passwordMatched = await bcrypt.compare(userData.password, user[0].password)
+    
+    if (!passwordMatched) {
+      return failureResponse(req, res, {message: "Wrong password", error: true}, 401) 
+    }
     if(user.length > 0) {
       let jwtSecretKey = process.env.JWT_SECRET_KEY;
       let data = {

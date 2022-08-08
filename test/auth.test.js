@@ -24,3 +24,116 @@
 //         TEST_TIMEOUT
 //     );
 // })
+
+
+
+process.env.NODE_ENV = 'test';
+
+let mongoose = require("mongoose");
+//let Book = require('../app/models/book');
+
+//Require the dev-dependencies
+let chai = require('chai');
+let chaiHttp = require('chai-http');
+let server = require('../app');
+const { response } = require("express");
+const { authorization } = require("../services/auth.service");
+let should = chai.should();
+
+
+chai.use(chaiHttp);
+
+
+const token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0aW1lIjoiTW9uIEF1ZyAwOCAyMDIyIDA0OjQ3OjUxIEdNVCswNTAwIChQYWtpc3RhbiBTdGFuZGFyZCBUaW1lKSIsInVzZXJJZCI6IjYyZWZlZDgxYmM2OWIyZmM5YTg4YWY2ZSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTY1OTkxNjA3MX0.UZ4bOfZW5xHTwlcAxdWiNXVzTNwGCnUgN7ENgURcTco"
+  describe('/testing movies controller ', () => {
+      it('it should GET all the User', (done) => {
+        const userdata = {
+            "email": "umertayyeb223@gmail.com",
+            "password": "1122"
+        }
+        chai.request(server)
+            .get('/login')
+            .send(userdata)
+           // .set('authorization','Bearer ' + token)
+            .end((err, res) => {
+                console.log(res)
+                  res.should.have.status(401);
+                
+                //   res.body.should.be.a('array');
+                //   res.body.length.should.be.eql(0);
+              done();
+            });
+      });
+      it('it should GET all the User', (done) => {
+        const userdata = {
+            "email": "umertayyeb4545454223@gmail.com",
+            "password": "1122"
+        }
+        chai.request(server)
+            .get('/login')
+            .send(userdata)
+            //  .set('authorization','Bearer ' + token)
+            .end((err, res) => {
+                console.log(res)
+                  res.should.have.status(200);
+                
+                //   res.body.should.be.a('array');
+                //   res.body.length.should.be.eql(0);
+              done();
+            });
+      });
+      it('it should GET all the User', (done) => {
+        const userdata = {
+            "email": "",
+            "password": "1122"
+        }
+        chai.request(server)
+            .get('/login')
+            .send(userdata)
+            //  .set('authorization','Bearer ' + token)
+            .end((err, res) => {
+                console.log(res)
+                  res.should.have.status(400);
+                
+                //   res.body.should.be.a('array');
+                //   res.body.length.should.be.eql(0);
+              done();
+            });
+      });
+      it('it should GET all the User', (done) => {
+        const userdata = {
+            "email": "umertayyeb4545454223@gmail.com",
+            "password": ""
+        }
+        chai.request(server)
+            .get('/login')
+            .send(userdata)
+            //  .set('authorization','Bearer ' + token)
+            .end((err, res) => {
+                console.log(res)
+                  res.should.have.status(400);
+                
+                //   res.body.should.be.a('array');
+                //   res.body.length.should.be.eql(0);
+              done();
+            });
+      });
+      it('it should GET all the User', (done) => {
+        const userdata = {
+            "email": "",
+            "password": ""
+        }
+        chai.request(server)
+            .get('/login')
+            .send(userdata)
+            //  .set('authorization','Bearer ' + token)
+            .end((err, res) => {
+                console.log(res)
+                  res.should.have.status(400);
+                
+                //   res.body.should.be.a('array');
+                //   res.body.length.should.be.eql(0);
+              done();
+            });
+      });
+    });
